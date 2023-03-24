@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.lof::-webkit-scrollbar {
+    width: 7px;
+}
+
+.lof::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #eaeaea;
+}
+
+.lof::-webkit-scrollbar-thumb:hover {
+    background: #0070f3;
+}
+
+.lof::-webkit-scrollbar-track {
+    border-radius: 10px;
+}

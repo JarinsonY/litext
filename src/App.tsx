@@ -1,20 +1,31 @@
 import axios from 'axios';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 
 interface Text {
     id: number;
     text: string;
 }
 
-
 function App() {
-    const [textInput, setTextInput] = useState('');
+    const [textInput, setTextInput] = useState("");
     const [texts, setTexts] = useState<Text[]>([]);
+    const listRef = useRef<HTMLDivElement>(null);
+
+    const scrollToEnd = () => {
+        // timeout for scroll to execute after DOM has been updated
+        const scrollTimeout = setTimeout(() => {
+            if (listRef.current) {
+                listRef.current.scrollTop = listRef.current.scrollHeight;
+            }
+        }, 0);
+
+        return () => clearTimeout(scrollTimeout);
+    };
+
 
     useEffect(() => {
-        // al montar el componente, pedimos la lista de textos al backend
-        axios.get<Text[]>("http://localhost:4000/texts")
+        // request the list of texts from the backend
+        axios.get<Text[]>("http://192.168.10.22:4000/texts")
             .then((response) => {
                 setTexts(response.data);
             });
@@ -27,62 +38,85 @@ function App() {
     const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (textInput.trim() !== "") {
-            // enviamos el texto al backend y actualizamos la lista de textos
-            /* axios.post<Text>("http://localhost:4000/texts", { text: textInput })
-                .then((response) => {
-                    setTexts((texts) => [...texts, response.data]);
-                    setTextInput("");
-                }); */
-            axios.post<Text[]>("http://localhost:4000/texts", { text: textInput })
+            // send the text to the backend and update the list of texts
+            axios.post<Text[]>("http://192.168.10.22:4000/texts", { text: textInput })
                 .then((response) => {
                     setTexts(response.data);
                     setTextInput("");
+                    scrollToEnd();
                 });
         }
     };
 
-    const getAllTexts = async () => {
-        const response = await fetch('http://localhost:4000/texts');
-        const data = await response.json();
-        console.log(data);
-        // setTexts(data);
-    };
-
     return (
-        <div className="p-4">
-            <button
-                type="button"
-                onClick={getAllTexts}
-                className="border-4 border-blue-500 bg-white text-blue-500 font-bold mb-4 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-                Get all texts
-            </button>
-            <form onSubmit={handleFormSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="text" className="block text-gray-700 font-bold mb-2">
-                        Texto
-                    </label>
-                    <input
-                        type="text"
-                        id="text"
-                        name="text"
-                        value={textInput}
-                        onChange={handleTextInputChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        <div className="h-screen px-2 flex flex-col justify-center items-center">
+            <div className="w-11/12 py-20 flex flex-col lg:flex-row gap-y-9 flex-1 justify-center items-center">
+
+                <form
+                    onSubmit={handleFormSubmit}
+                    className="w-4/5 lg:w-2/4 px-6"
                 >
-                    Enviar
-                </button>
-            </form>
-            <ul className="list-disc list-inside mt-4">
-                {texts.map((item) => (
-                    <li key={item.id}>{item.text}</li>
-                ))}
-            </ul>
+                    <div className="mb-4">
+                        <label htmlFor="text" className="block text-gray-700 font-bold mb-2 cursor-pointer">
+                            Type a text here
+                        </label>
+                        <input
+                            type="text"
+                            id="text"
+                            name="text"
+                            value={textInput}
+                            onChange={handleTextInputChange}
+                            className="w-full bg-white border-4 border-solid border-slate-400 rounded h-11 leading-10 pl-2.5 pr-10 transition-all focus:border-4 focus:border-solid focus:border-blue-500 focus:outline-none focus:shadow-2xl"
+                        />
+                    </div>
+                    <div className="w-full flex justify-center">
+                        <button
+                            type="submit"
+                            disabled={textInput.trim() === ""}
+                            className="w-1/2 lg:w-full h-11 leading-10 bg-black text-white font-bold border-none rounded transition-all hover:bg-blue-700 focus:shadow-xl disabled:bg-slate-400"
+                        >
+                            Send
+                        </button>
+                    </div>
+                </form>
+
+                <div className="w-4/5 lg:w-1/2">
+                    <h2 className="text-xl font-bold text-center col-start-1 col-end-3 m-auto text-white bg-black rounded p-2">List of texts</h2>
+
+                    <div ref={listRef} className="lof overflow-y-scroll h-72 lg:h-[65vh] py-2">
+                        {texts.length === 0
+                            ? <p className="text-center text-gray-500">No hay textos</p>
+                            : <ul className="divide-y divide-gray-200">
+                                {texts.map((text) => (
+                                    <li key={text.id} className="py-4 px-6 group hover:bg-blue-50 hover:shadow-md">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex-shrink-0">
+                                                <p className="font-medium text-gray-900">{text.id}</p>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-gray-500 truncate group-hover:text-blue-700">{text.text}</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+            <footer className="w-full h-20 flex justify-center items-center border-t">
+                <a
+                    className="flex items-center"
+                    href="https://github.com/JarinsonY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Develop by Jarinson Palacios
+                    <span className="h-4 ml-2">
+                        <img src="/JP.png" alt="JP Logo" className="h-4 ml-2" />
+                    </span>
+                </a>
+            </footer>
         </div>
     );
 }

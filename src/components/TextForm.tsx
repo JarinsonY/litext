@@ -1,25 +1,44 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { ChangeEvent, FormEvent, SetStateAction } from 'react'
 
-interface TextFormProps {
-    setTexts: React.Dispatch<React.SetStateAction<string[]>>;
+import Button from './Button';
+import Input from './Input';
+
+type Props = {
+    textInput: string;
+    setTextInput: (value: SetStateAction<string>) => void;
+    handleFormSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
-export const TextForm: React.FC<TextFormProps> = ({ setTexts }) => {
-    const [text, setText] = useState('');
+const TextForm = ({ textInput, setTextInput, handleFormSubmit }: Props) => {
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        await axios.post('http://localhost:3001/api/texts', { text });
-        const response = await axios.get('/api/texts');
-        setTexts(response.data);
-        setText('');
+    const handleTextInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setTextInput(event.target.value);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-            <button type="submit">Enviar</button>
+        <form
+            onSubmit={handleFormSubmit}
+            className="w-4/5 lg:w-2/4 px-6"
+        >
+            <div className="mb-4">
+                <Input
+                    id="text"
+                    type="text"
+                    label="Type a text here"
+                    value={textInput}
+                    onChange={handleTextInputChange}
+                />
+            </div>
+            <div className="w-full flex justify-center">
+                <Button
+                    type="submit"
+                    disabled={textInput.trim() === ""}
+                >
+                    Send
+                </Button>
+            </div>
         </form>
-    );
-};
+    )
+}
+
+export default TextForm

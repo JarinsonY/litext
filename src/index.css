@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    font-family: 'Lato', 'Open Sans', sans-serif;
+}
+
 .lof::-webkit-scrollbar {
     width: 7px;
 }

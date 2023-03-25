@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const port = 4000;
@@ -15,17 +16,16 @@ app.get("/texts", (req, res) => {
 
 app.post("/texts", (req, res) => {
     const text = req.body.text;
-    const id = texts.length + 1;
+    const id = uuidv4();
     texts.push({ id, text });
     res.json(texts);
 });
 
-/* app.post("/texts", (req, res) => {
-    const text = req.body.text;
-    const id = texts.length + 1;
-    texts.push({ id, text });
-    res.json({ id, text });
-}) */;
+app.delete("/texts/:id", (req, res) => {
+    const id = req.params.id;
+    texts = texts.filter((text) => text.id !== id);
+    res.json(texts);
+});
 
 app.listen(port, () => {
     console.log(`Backend listening at http://localhost:${port}`);

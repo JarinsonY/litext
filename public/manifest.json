@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "LiText",
+  "name": "Web site for technical test of Magneto",
   "icons": [
     {
       "src": "favicon.ico",

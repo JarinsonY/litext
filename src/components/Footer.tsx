@@ -9,9 +9,9 @@ const Footer = (props: Props) => {
                 target="_blank"
                 rel="noopener noreferrer"
             >
-                Develop by Jarinson Palacios
-                <span className="h-4 ml-2">
-                    <img src="/JP.png" alt="JP Logo" className="h-4 ml-2" />
+                Develop by Jarinson Palacios |
+                <span>
+                    <img src="/JP.png" alt="JP Logo" className="h-8 ml-1" />
                 </span>
             </a>
         </footer>

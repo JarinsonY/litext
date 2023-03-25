@@ -49,14 +49,13 @@ function App() {
     return (
         <div className="h-screen px-2 flex flex-col justify-center items-center">
             <main className="w-11/12 py-20 flex flex-col lg:flex-row gap-y-9 flex-1 justify-center items-center">
-
                 <TextForm
                     textInput={textInput}
                     setTextInput={setTextInput}
                     handleFormSubmit={handleFormSubmit}
                 />
 
-                <TextList texts={texts} listRef={listRef} />
+                <TextList texts={texts} setTexts={setTexts} listRef={listRef} />
             </main>
 
             <Footer />

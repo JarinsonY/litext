@@ -1,4 +1,4 @@
 export interface TextApp {
-    id: number;
+    id: string;
     text: string;
 }

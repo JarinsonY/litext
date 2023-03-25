@@ -24,7 +24,7 @@ const TextForm = ({ textInput, setTextInput, handleFormSubmit }: Props) => {
                 <Input
                     id="text"
                     type="text"
-                    label="Text"
+                    label="Type a text here"
                     value={textInput}
                     onChange={handleTextInputChange}
                 />

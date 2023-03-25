@@ -10,18 +10,18 @@ app.use(express.json());
 
 let texts = [];
 
-app.get("/texts", (req, res) => {
+app.get("/api/texts", (req, res) => {
     res.json(texts);
 });
 
-app.post("/texts", (req, res) => {
+app.post("/api/texts", (req, res) => {
     const text = req.body.text;
     const id = uuidv4();
     texts.push({ id, text });
     res.json(texts);
 });
 
-app.delete("/texts/:id", (req, res) => {
+app.delete("/api/texts/:id", (req, res) => {
     const id = req.params.id;
     texts = texts.filter((text) => text.id !== id);
     res.json(texts);
